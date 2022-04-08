@@ -1,9 +1,12 @@
 package com.itranswarp.learnjava;
 
+import java.util.StringJoiner;
+
 /**
- * Learn Java from https://www.liaoxuefeng.com/
+ * class StringBuilder 
  * 
- * @author liaoxuefeng
+ * @author lsrong
+ *
  */
 public class Main {
 	public static void main(String[] args) {
@@ -15,18 +18,38 @@ public class Main {
 				"INSERT INTO employee (name, position, salary, created_at) VALUES (?, ?, ?, ?)".equals(insert) ? "测试成功" : "测试失败");
 	}
 
+	/**
+	 * 通过 StringBuiler 构建 sql 插入字符串
+	 * 
+	 * @param table
+	 * @param fields
+	 * 
+	 * @return
+	 */
 	static String buildInsertSql(String table, String[] fields) {
-		// TODO:  StringBuilder append, toString
+		// StringBuilder append, toString
 		StringBuilder sqlSnytax = new StringBuilder();
 		sqlSnytax.append("INSERT INTO ");
 		sqlSnytax.append(table);
 		sqlSnytax.append(" (");
-		sqlSnytax.append(String.join(", ", fields));
+		
+		// String.join
+//		sqlSnytax.append(String.join(", ", fields));
+		
+		// StringJoiner
+		var sj = new StringJoiner(", ");
+		for(String field:fields) {
+			sj.add(field);
+		}
+		sqlSnytax.append(sj.toString());
+		
 		sqlSnytax.append(") VALUES (");
-		for(int i =0; i<fields.length-1; i++) {
+		for(int i =0; i<fields.length; i++) {
 			sqlSnytax.append("?, ");
 		}
-		sqlSnytax.append("?");
+		// 去除最后一个 “, ”
+		sqlSnytax.delete(sqlSnytax.length()- 2, sqlSnytax.length());
+		
 		sqlSnytax.append(")");
 		return sqlSnytax.toString();
 	}
