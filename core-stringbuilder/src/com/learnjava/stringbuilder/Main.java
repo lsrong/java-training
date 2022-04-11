@@ -1,4 +1,4 @@
-package com.itranswarp.learnjava;
+package com.learnjava.stringbuilder;
 
 import java.util.StringJoiner;
 
@@ -37,7 +37,7 @@ public class Main {
 //		sqlSnytax.append(String.join(", ", fields));
 		
 		// StringJoiner
-		var sj = new StringJoiner(", ");
+		StringJoiner sj = new StringJoiner(", ");
 		for(String field:fields) {
 			sj.add(field);
 		}
