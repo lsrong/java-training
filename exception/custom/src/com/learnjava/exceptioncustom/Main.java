@@ -1,4 +1,4 @@
-package com.learnjava.exception.custom;
+package com.learnjava.exceptioncustom;
 
 /**
  * Custom exception

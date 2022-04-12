@@ -1,4 +1,4 @@
-package com.learnjava.common.logger;
+package com.learnjava.commonlogger;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;

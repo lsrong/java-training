@@ -1,4 +1,4 @@
-package com.learnjava.exception.custom;
+package com.learnjava.exceptioncustom;
 
 public class LoginFailedException extends BaseException {
   public LoginFailedException() {
