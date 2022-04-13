@@ -3,9 +3,9 @@ package com.learnjava.annotation;
 import java.lang.reflect.Field;
 
 /**
- * Learn Java from https://www.liaoxuefeng.com/
+ * Annotation practice
  *
- * @author liaoxuefeng
+ * @author lsrong
  */
 public class Main {
 
@@ -23,12 +23,31 @@ public class Main {
     }
   }
 
+  // 使用@Range注解来检查Java Bean的字段。如果字段类型是String，就检查String的长度，如果字段是int，就检查int的范围。
   static void check(Person person) throws IllegalArgumentException, ReflectiveOperationException {
-    for (Field field : person.getClass().getFields()) {
+
+    Field[] fields = person.getClass().getFields();
+    for (Field field : fields) {
       Range range = field.getAnnotation(Range.class);
-      if (range != null) {
-        Object value = field.get(person);
-        // TODO:
+      if (range == null) {
+        continue;
+      }
+
+      Object value = field.get(person);
+      // 字符串检测长度
+      if (value instanceof String) {
+        String s = (String) value;
+        if (s.length() < range.min() || s.length() > range.max()) {
+          throw new IllegalArgumentException("Invalid field: " + field.getName());
+        }
+      }
+
+      // 数值检测大小
+      if (value instanceof Integer) {
+        int i = (int) value;
+        if (i < range.min() || i > range.max()) {
+          throw new IllegalArgumentException("Invalid field: " + field.getName());
+        }
       }
     }
   }

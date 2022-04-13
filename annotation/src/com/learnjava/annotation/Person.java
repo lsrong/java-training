@@ -2,13 +2,13 @@ package com.learnjava.annotation;
 
 public class Person {
 
-  @com.learnjava.annotation.Range(min = 1, max = 20)
+  @Range(min = 1, max = 20)
   public String name;
 
-  @com.learnjava.annotation.Range(max = 10)
+  @Range(max = 10)
   public String city;
 
-  @com.learnjava.annotation.Range(min = 1, max = 100)
+  @Range(min = 1, max = 100)
   public int age;
 
   public Person(String name, String city, int age) {
