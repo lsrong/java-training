@@ -45,8 +45,6 @@ public class FoodFactory {
 
 > 单一职责原则： 一个类只提供一种功能，FoodFactory只负责提生产不同的Food派生实例对象。
 
-
-
 ##  工厂模式 Factory Interface
 
 如果工厂方法可以满足需求的情况下，其实没有必要引入工厂模式，如果需要两个或者两个以上工厂的场景时，就需要使用工厂模式的思路：
@@ -133,7 +131,7 @@ public class FoodApplication {
 
 `makeFood(A)`制作A类的食物，但是不同的工厂生产出来的完全是不同的。
 
-**工厂模式的核心：首先选好需要的工厂，然后就和简单工厂模式一样常见派生的实例对象。**
+**工厂模式的核心：首先选好需要的工厂，然后就和工厂方法一样创建派生的实例对象。**
 
 再比如：有LogFactory接口，实现类有 FileLogFactory 和 KafkaLogFactory，分别对应将日志写入文件和写入 Kafka 中，先确定实例化FileLogFactory还是KafkaLogFactory，然后在确定接下来的操作。
 
@@ -150,6 +148,8 @@ public class FoodApplication {
 示例说明，为用户提供一个Markdown文本装HTML和Word的服务，应用抽象工厂模式实现如下：
 
 ![abstract-example](D:\Code\Java\java-training\design-patterns\abstract-example.png)
+
+抽象工厂`AbstractFactory `定义代码如下:
 
 ```java
 /**
@@ -413,4 +413,128 @@ goodWord.save(Paths.get(".", "good.doc"));
       }
   ```
 
-  > 示例代码：[design-patterns-factory](https://github.com/lsrong/java-training/tree/master/design-patterns/src/main/java/com/design/patterns/creation/factory)
+- 抽象工厂模式有个问题，如果需要增加产品的话那么所有的实际工厂都需要增加新方法，有点违反了**对修改关闭，对扩展开发的设计原则**
+
+  
+
+## 单例模式 Singleton
+
+保证一个类有且仅有一个实例，并提供一个全局访问点，实现思路如下：
+
+- 私有化构造方法，`private Singleton()`
+- 静态属性来保存唯一实例，`private static final Singleton instance`
+- 静态方法来获取唯一实例，`getInstance()`
+
+```java
+/**
+ * @description: Singleton,最简单的实现
+ * @author: lsrong
+ * @date: 2022/9/30 17:25
+ **/
+public class Singleton {
+    // 私有构造
+    private Singleton(){}
+
+    // 私有唯一实例
+    private static final Singleton instance = new Singleton();
+
+    // 公开实例获得方法
+    public static Singleton getInstance(){
+        return instance;
+    }
+}
+```
+
+上面需要注意不应该在Singleton类中塞入其他的静态方法，还有这种方法每次都会生成实例对象，有些情况是不需要生成的，这种情况称为延迟加载，实现方式如下：
+
+```java
+/**
+ * @description: DeferSingleton,延迟加载单例模式
+ * @author: lsrong
+ * @date: 2022/9/30 17:25
+ **/
+public class DeferSingleton {
+    // 私有构造
+    private DeferSingleton(){}
+
+    // 私有唯一实例
+    private static volatile DeferSingleton instance;
+
+    // 延迟加载
+    public static DeferSingleton getInstance(){
+        if(instance == null){
+            synchronized (DeferSingleton.class){
+                if(instance == null) {
+                    instance = new DeferSingleton();
+                }
+            }
+        }
+        
+        return instance;
+    }
+}
+```
+
+多线程下会出现并发的问题，因此需要加锁`synchronized`，一旦加锁就会严重影响性能，所以一般不会用这种方式。
+
+嵌套类的方式也可以实现，和简单的单例模式类似：
+
+```java
+/**
+ * @description: 嵌套类的单例模式
+ * @author: lsrong
+ * @date: 2022/9/30 17:40
+ **/
+public class HolderSingleton {
+    private HolderSingleton(){}
+
+    // 嵌套类可以访问外部类的静态属性和静态方法 的特性
+    private static class Holder{
+        private static HolderSingleton instance = new HolderSingleton();
+    }
+
+    public static HolderSingleton getInstance(){
+        return Holder.instance;
+    }
+}
+```
+
+另一种实现Singleton的方式是利用Java的`enum`，因为Java保证枚举类的每个枚举都是单例，所以我们只需要编写一个只有一个枚举的类
+
+```java
+/**
+ * @description: 枚举类的单例模式
+ * @author: lsrong
+ * @date: 2022/9/30 17:48
+ **/
+public enum EnumSingleton {
+    INSTANCE;   // 唯一枚举
+    private String name;
+    
+    public String getName() {
+        return this.name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+}
+
+// 使用
+// String name = World.INSTANCE.getName();
+```
+
+实际上,大部分框架都有提供实例化单例类的方式，如Spring的`Component`：
+
+```java
+@Component // 表示一个单例组件
+public class MyService {
+    ...
+}
+```
+
+
+
+## 建设者模式 Builder
+
+> 将一个复杂对象的构建与它的表示分离，使得同样的构建过程可以创建不同的表示。
