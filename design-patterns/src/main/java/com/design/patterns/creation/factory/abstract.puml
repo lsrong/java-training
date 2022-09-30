@@ -1,0 +1,47 @@
+@startuml
+'https://plantuml.com/class-diagram
+
+' 抽象工厂模式Uml图：
+' 提供一个Markdown文本转换为HTML和Word的服务
+
+namespace service{
+    interface AbstractFactory {
+        HtmlDocument makeHtml(String md)
+        WordDocument makeWord(String md)
+    }
+    interface HtmlDocument {
+        String toHtml()
+        void save(Path path) throws IOException
+    }
+    interface WordDocument{
+      void save(Path path) throws IOException
+    }
+    HtmlDocument <-- AbstractFactory
+    WordDocument <-- AbstractFactory
+}
+
+
+namespace fast.Factory {
+    class FastFactory
+    service.AbstractFactory <|-- FastFactory
+    class FastHtmlDocument
+    FastFactory <|-- FastHtmlDocument
+    class FastWordDocument
+    FastFactory <|-- FastWordDocument
+}
+
+namespace good.Factory {
+    class GoodFactory
+    service.AbstractFactory <|-- GoodFactory
+    class GoodHtmlDocument
+    GoodFactory <|-- GoodHtmlDocument
+    class GoodWordDocument
+    GoodFactory <|-- GoodWordDocument
+}
+
+
+
+
+
+
+@enduml
