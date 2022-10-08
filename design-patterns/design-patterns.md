@@ -535,6 +535,14 @@ public class MyService {
 
 
 
-## 建设者模式 Builder
+## 生成器模式 Builder
 
 > 将一个复杂对象的构建与它的表示分离，使得同样的构建过程可以创建不同的表示。
+
+使用多个“小工厂”（属性构建方法）来最终创建出一个完整的对象，一般见到`XxxBuilder`的类就是构建者模式的类，用于创建一个对象的步骤比较多的时候，每个步骤都需要创建不同属性或者操作，最终组成一个完整的对象。
+
+`Builder`生成器一般的使用方式：
+```java
+User user = UserBuilder.name("builder").password("pwd123").age(18).build();
+```
+先创建一个Builder,然后链式调用一系列构建方法，最终调用一次`build()`方法，最后创建对象。
