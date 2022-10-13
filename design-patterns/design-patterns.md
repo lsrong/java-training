@@ -545,4 +545,93 @@ public class MyService {
 ```java
 User user = UserBuilder.name("builder").password("pwd123").age(18).build();
 ```
-先创建一个Builder,然后链式调用一系列构建方法，最终调用一次`build()`方法，最后创建对象。
+自建的生成器模式示例：
+```java
+public class User {
+    // 用户名私有属性
+    private String name;
+    private String password;
+    private Integer age;
+
+    private User(String name, String password, Integer age){
+        this.name = name;
+        this.password = password;
+        this.age = age;
+    }
+    
+    public static UserBuilder builder(){
+        return new UserBuilder();
+    }
+    
+    public static class UserBuilder{
+        private String name;
+        private String password;
+        private Integer age;
+
+        private UserBuilder(){
+        }
+
+        public UserBuilder name(String name) {
+            this.name = name;
+            return this;
+        }
+
+        public UserBuilder password(String pwd) {
+            this.password = pwd;
+            return this;
+        }
+
+        public UserBuilder age(Integer age) {
+            this.age = age;
+            return this;
+        }
+
+        public User build(){
+            if(name == null || password == null) {
+                throw new RuntimeException("用户名和密码必须");
+            }
+
+            if(age <= 0 || age >= 150) {
+                throw new RuntimeException("年龄不合法");
+            }
+
+            return new User(name, password, age);
+        }
+    }
+}
+```
+使用方式：先创建一个Builder,然后链式调用一系列构建方法，最终调用一次`build()`方法，最后创建对象。
+```java
+public class BuilderApp {
+  public static void main(String[] args) {
+    // 自定义的Builder示例
+    User user = User.builder()
+            .name("builder-custom")
+            .password("pwd123")
+            .age(28)
+            .build();
+    System.out.println(user);
+  }
+}
+```
+生成器模式如果属性比较多的时候，会多写很多“无用”的builder的代码，Builder的构造方法可以强制让调用者提供必填字段，`build()`方法中校验各个参数。
+
+可以使用lombok的@Builder标注可以忽略很多builder代码
+```java
+/**
+ * @description: 使用 Lombok 的构建者模式
+ * @author: lsrong
+ * @date: 2022/10/8 11:02
+ **/
+@Builder
+public class UserLombok {
+    private String name;
+    private String password;
+    private int age;
+    
+    public String toString() {
+        return String.format("UserLombokBuilder:name=%s, password=%s, age=%d", name, password, age);
+    }
+}
+```
+
